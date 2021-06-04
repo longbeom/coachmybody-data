@@ -12,7 +12,7 @@ def fitness_csv_to_db():
 
     with open('fitness.csv', newline='') as file:
         reader = csv.reader(file, delimiter='|')
-        i = 46
+        i = 46 # auto increment로 변경 예정
         for row in reader:
             id = i
             name = row[0]
