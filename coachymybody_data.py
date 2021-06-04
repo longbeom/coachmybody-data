@@ -20,15 +20,29 @@ def fitness_csv_to_db():
             description = row[2]
             caution = row[3]
 
-            insert_sql = "INSERT INTO exercise(id, body_part, category, caution, description, image_uri, name) " \
-                         "VALUES(%d, '%s', 'FITNESS', '%s', '%s','기본이미지', '%s')" % (
-                             id, body_part, caution, description, name)
+            insert_exercise_sql = "INSERT INTO exercise(id, body_part, category, caution, description, image_uri, name) " \
+                                  "VALUES(%d, '%s', 'FITNESS', '%s', '%s','기본이미지', '%s')" % \
+                                  (id, body_part, caution, description, name)
+
+            lab = row[4]
+            set = int(row[5][:-3])
+
+            if lab.endswith('분'):
+                lab = int(lab[:-1])
+                insert_exercise_record_sql = "INSERT INTO exercise_record(exercise_id, type, exercise_minutes, exercise_set) " \
+                                             "VALUES(%d, 'TIME_SET', %d, %d)" % (id, lab, set)
+            else:
+                lab = int(lab[:-1])
+                insert_exercise_record_sql = "INSERT INTO exercise_record(exercise_id, type, exercise_lab, exercise_set) " \
+                                             "VALUES(%d, 'LAB_SET', %d, %d)" % (id, lab, set)
 
             try:
-                cursor.execute(insert_sql)
+                # cursor.execute(insert_exercise_sql)
+                cursor.execute(insert_exercise_record_sql)
                 conn.commit()
                 i += 1
-            except Exception:
+            except Exception as ex:
+                print('에러 발생 ', ex)
                 conn.rollback()
 
 
